@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        Biodata Pahlawan
+    </title>
+    <!-- Including Senna -->
+    
+    <link rel="stylesheet" href="css/test.css">
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+        integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.min.js"
+        integrity="sha512-7rusk8kGPFynZWu26OKbTeI+QPoYchtxsmPeBqkHIEXJxeun4yJ4ISYe7C6sz9wdxeE1Gk3VxsIWgCZTc+vX3g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+</head>
+
+<body>
+            <!-- Navbar links -->
+            <div class="navigation"> 
+                <a href="index.html" class="nav-item nav-link active">Home</a>
+                <a href="heroes.html" class="nav-item nav-link">Heroes</a>
+             </div>
+
+    <br>
+
+    <div class="container">
+        <h2>
+            Pahlawan Indonesia
+        </h2>
+
+        <select #pencarian id="heroes" name="heroes">
+          <option selected disabled value="">Search.....</option>  
+          <option value="all">All</option>
+        </select>
+
+        <br><br><br>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td>
+                            No
+                        </td>
+                        <td>
+                            Nama
+                        </td>
+                        <td>
+                            Tahun Lahir
+                        </td>
+                        <td>
+                            Tahun Kematian
+                        </td>
+                        <td>
+                            Tahun Peringatan
+                        </td>
+                        <td>
+                            Deskripsi
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+    
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-3 text-primary" id="loadingBar">
+            <div class="spinner-border spinner-border-sm"></div> loading
+        </div>
+
+    </div>
+
+    <br>
+
+
+    <!-- End of content surface -->
+
+    <script>
+        $(document).ready(function() {
+            $('.heroes-search').select2({
+                width: 'resolve'
+            });
+
+            if(sessionStorage.getItem('heroes') != null) {
+               
+                var data = JSON.parse(sessionStorage.getItem('heroes'));
+
+                console.table(data)
+
+                $("#loadingBar").hide()
+            } else { 
+                getHeroes();            
+                var data = JSON.parse(sessionStorage.getItem('heroes'));
+                console.table(data)
+            }
+
+            // looping the data inside select html tag
+            for(let i = 0; i < data.length; i++) {
+                var option_html = `<option value="`+ data[i].name +`">`+ data[i].name +`</option>`
+
+                $(option_html).appendTo('select#heroes')
+            }
+            setDataTables(data)
+
+            $('select#heroes').on('change', function() {
+                var value = $(this).val()
+                var results = [];
+
+                if(value != 'all') {
+                
+                    for(let j = 0; j < data.length; j++) {
+                        if(data[j].name == value) {
+                            results.push(data[j])
+                        }
+                    }
+
+                    setDataTables(results);
+                } else {
+                    setDataTables(JSON.parse(sessionStorage.getItem('heroes')));
+                }
+            });
+        });
+
+        function setDataTables(theData) {
+
+            $('table tbody').empty()
+
+            for(let i = 0; i < theData.length; i++) {
+                var table_content_html = `
+                                            <tr>
+                                                <td>`+ (i + 1) +`</td>
+                                                <td>`+ theData[i].name +`</td>
+                                                <td>`+ theData[i].birth_year +`</td>
+                                                <td>`+ theData[i].death_year +`</td>
+                                                <td>`+ theData[i].ascension_year +`</td>
+                                                <td>`+ theData[i].description +`</td>
+                                            </tr>
+                                        `
+
+                $(table_content_html).appendTo('table tbody')
+            }
+        }
+
+        function getHeroes() {
+             const url = "https://indonesia-public-static-api.vercel.app/api/heroes";
+    
+
+            // fetch data from server
+            fetch(url)
+            .then(response => response.json())
+            .then((res) => {
+                // print the data to console as a table
+                //console.table(res)
+
+                // hide loading bar
+                $("#loadingBar").hide()
+
+                // save the data to session storage, so the visitor not fetch data again
+                // when the visitor revisit our site
+                sessionStorage.setItem('heroes', JSON.stringify(res))
+            })
+            .catch(err => console.error(err))
+        }
+    </script>
+</body>
+
+</html>

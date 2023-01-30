@@ -1,0 +1,60 @@
+body {
+    background-color: #ccc;
+}
+
+.content {
+    width: 900px;
+    background-color: white;
+    margin: auto;
+    padding: 16px;
+}
+.navigation {
+    width: 900px;
+    background-color: brown;
+    margin: auto;
+    padding: 16px;
+    display: inside;
+    align-items: center;
+    justify-content: space-between;
+    text-transform: uppercase;
+    color: white;
+}
+
+.logo {
+    cursor: pointer;
+}
+
+
+table {
+    width: 100%;
+}
+
+h1 {
+   font-size: 24px; 
+}
+
+.testimoni {
+    background-color: brown;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-right: 12px;
+    padding-left: 12px;
+    color: white;
+}
+.end{
+    width: 900px;
+    background-color: brown;
+    text-align: center;
+    margin: auto;
+    color: white;
+    padding: 16px;
+}
+
+#pencarian {
+    width: 60%;
+    margin-bottom: 3px;
+    padding: 3px;
+}
